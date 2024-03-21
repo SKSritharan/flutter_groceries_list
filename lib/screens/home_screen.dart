@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_groceries_list/providers/grocery_list_provider.dart';
-import 'package:flutter_groceries_list/utils/widgets/add_product_form.dart';
+import 'package:flutter_groceries_list/utils/widgets/edit_product_form.dart';
 import 'package:provider/provider.dart';
 
 import '../models/product.dart';
+import '../utils/widgets/add_product_form.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,7 +25,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Grocery List'),
+        title: Text(
+          'My Grocery List',
+          style: Theme.of(context).textTheme.headlineLarge,
+        ),
+        centerTitle: true,
       ),
       body: Consumer<GroceryListProvider>(
         builder: (context, groceryProvider, child) {
@@ -50,18 +54,44 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: groceryProvider.groceryList.length,
                   itemBuilder: (context, index) {
                     Product product = groceryProvider.groceryList[index];
-                    return ListTile(
-                      title: Text(product.name),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Quantity: ${product.quantity}'),
-                          Text('Unit Price: Rs. ${product.unitPrice}'),
-                          Text(
-                              'Total: Rs.${(product.quantity * product.unitPrice).toStringAsFixed(2)}'),
-                        ],
-                      ),
-                    );
+                    if (groceryProvider.groceryList.isEmpty) {
+                      return const Center(
+                        child: Text('Your grocery list is empty!'),
+                      );
+                    } else {
+                      return ListTile(
+                        title: Text(product.name),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Quantity: ${product.quantity}'),
+                            Text('Unit Price: Rs. ${product.unitPrice}'),
+                            Text(
+                                'Total: Rs.${(product.quantity * product.unitPrice).toStringAsFixed(2)}'),
+                          ],
+                        ),
+                        trailing: Column(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      EditProductForm(product: product),
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                groceryProvider.removeProduct(product);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   },
                 ),
               ),

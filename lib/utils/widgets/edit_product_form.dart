@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../models/product.dart';
 
-class AddProductForm extends StatefulWidget {
-  const AddProductForm({super.key});
+class EditProductForm extends StatefulWidget {
+  final Product product;
+  const EditProductForm({required this.product, super.key});
 
   @override
-  State<AddProductForm> createState() => _AddProductFormState();
+  State<EditProductForm> createState() => _EditProductFormState();
 }
 
-class _AddProductFormState extends State<AddProductForm> {
+class _EditProductFormState extends State<EditProductForm> {
   final _formKey = GlobalKey<FormState>();
   final _productNameController = TextEditingController();
   final _quantityController = TextEditingController();
   final _unitPriceController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _productNameController.text = widget.product.name;
+    _quantityController.text = widget.product.quantity.toString();
+    _unitPriceController.text = widget.product.unitPrice.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +40,7 @@ class _AddProductFormState extends State<AddProductForm> {
     }
 
     return AlertDialog(
-      title: const Text('Add Product'),
+      title: const Text('Edit Product'),
       content: Form(
         key: _formKey,
         child: Column(
@@ -75,19 +83,17 @@ class _AddProductFormState extends State<AddProductForm> {
               int quantity = int.parse(_quantityController.text);
               double unitPrice = double.parse(_unitPriceController.text);
 
-              Product newProduct = Product(
-                id: const Uuid().v4(),
-                name: name,
-                unitPrice: unitPrice,
-                quantity: quantity,
-              );
+              String productId = widget.product.id; // Add this line
+
+              Product newProduct =
+                  Product(id: productId, name: name, unitPrice: unitPrice, quantity: quantity);
 
               Provider.of<GroceryListProvider>(context, listen: false)
-                  .addProduct(newProduct);
+                  .updateProduct(newProduct);
               Navigator.of(context).pop();
             }
           },
-          child: const Text('Add'),
+          child: const Text('Update'),
         ),
       ],
     );

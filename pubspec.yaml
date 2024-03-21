@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   uuid: ^4.3.3
   provider: ^6.1.2
+  barcode_scan2: ^4.3.0
 
 dev_dependencies:
   flutter_test:
