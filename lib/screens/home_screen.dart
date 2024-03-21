@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_groceries_list/utils/widgets/edit_product_form.dart';
+import 'package:flutter_groceries_list/utils/widgets/product_item.dart';
+import 'package:flutter_groceries_list/utils/widgets/total_bill_card.dart';
 import 'package:provider/provider.dart';
 
 import '../models/product.dart';
@@ -22,14 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double calculateTotalBill(List<Product> products) {
-      double total = 0.0;
-      for (var product in products) {
-        total += (product.quantity * product.unitPrice);
-      }
-      return total;
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -43,19 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return Column(
             children: [
               // Total Bill Display
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Total Bill:',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(
-                        'Rs. ${calculateTotalBill(groceryProvider.groceryList)}',
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
+              const TotalBillCard(),
               Expanded(
                 child: ListView.builder(
                   itemCount: groceryProvider.groceryList.length,
@@ -66,38 +48,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Text('Your grocery list is empty!'),
                       );
                     } else {
-                      return ListTile(
-                        title: Text(product.name),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Quantity: ${product.quantity}'),
-                            Text('Unit Price: Rs. ${product.unitPrice}'),
-                            Text(
-                                'Total: Rs.${(product.quantity * product.unitPrice).toStringAsFixed(2)}'),
-                          ],
-                        ),
-                        trailing: Column(
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.edit),
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      EditProductForm(product: product),
-                                );
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                groceryProvider.removeProduct(product);
-                              },
-                            ),
-                          ],
-                        ),
-                      );
+                      return ProductItem(
+                          product: product,
+                          onEditPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  EditProductForm(product: product),
+                            );
+                          },
+                          onDeletePressed: () {
+                            groceryProvider.removeProduct(product);
+                          });
                     }
                   },
                 ),
