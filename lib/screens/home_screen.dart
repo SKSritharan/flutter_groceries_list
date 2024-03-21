@@ -14,6 +14,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    // Load products from the database when the app starts
+    Provider.of<GroceryListProvider>(context, listen: false).loadProducts();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double calculateTotalBill(List<Product> products) {
       double total = 0.0;
