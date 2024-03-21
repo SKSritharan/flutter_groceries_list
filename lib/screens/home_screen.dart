@@ -49,17 +49,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     } else {
                       return ProductItem(
-                          product: product,
-                          onEditPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  EditProductForm(product: product),
-                            );
-                          },
-                          onDeletePressed: () {
-                            groceryProvider.removeProduct(product);
-                          });
+                        product: product,
+                        onEditPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                EditProductForm(product: product),
+                          );
+                        },
+                        onDeletePressed: () {
+                          groceryProvider.removeProduct(product);
+                        },
+                        onChecked: (newValue) {
+                          groceryProvider.toggleIsChecked(product);
+                        },
+                      );
                     }
                   },
                 ),

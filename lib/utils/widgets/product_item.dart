@@ -5,12 +5,14 @@ class ProductItem extends StatelessWidget {
   final Product product;
   final VoidCallback onEditPressed;
   final VoidCallback onDeletePressed;
+  final void Function(bool?) onChecked;
 
   const ProductItem({
     super.key,
     required this.product,
     required this.onEditPressed,
     required this.onDeletePressed,
+    required this.onChecked,
   });
 
   @override
@@ -22,6 +24,7 @@ class ProductItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Checkbox(value: product.isChecked, onChanged: onChecked),
             // Product Image (if available)
             if (product.imageUrl != null)
               Center(
@@ -37,7 +40,10 @@ class ProductItem extends StatelessWidget {
             // Product Name
             Text(
               product.name,
-              style: Theme.of(context).textTheme.headline6,
+              // style: Theme.of(context).textTheme.headline6,
+              style: product.isChecked
+                  ? const TextStyle(decoration: TextDecoration.lineThrough)
+                  : Theme.of(context).textTheme.headline6,
             ),
             const SizedBox(height: 4),
 

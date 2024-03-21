@@ -55,13 +55,15 @@ class GroceryListProvider extends ChangeNotifier {
     _groceryList.add(product);
     notifyListeners();
 
-    DatabaseHelper.instance.insertProduct(product);
+    _dbHelper.insertProduct(product);
   }
 
   // Remove a product
   void removeProduct(Product product) {
     _groceryList.remove(product);
     notifyListeners();
+
+    _dbHelper.deleteProduct(product);
   }
 
   void toggleIsChecked(Product product) {
@@ -70,6 +72,7 @@ class GroceryListProvider extends ChangeNotifier {
       _groceryList[index].isChecked = !_groceryList[index].isChecked;
       notifyListeners();
     }
+    _dbHelper.updateProduct(product);
   }
 
   // Edit/Update a product
@@ -79,5 +82,6 @@ class GroceryListProvider extends ChangeNotifier {
       _groceryList[index] = product;
       notifyListeners();
     }
+    _dbHelper.updateProduct(product);
   }
 }
